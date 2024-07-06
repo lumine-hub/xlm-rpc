@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.xlm</groupId>
-            <artifactId>xlm-rpc-easy</artifactId>
+            <artifactId>xlm-rpc-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
