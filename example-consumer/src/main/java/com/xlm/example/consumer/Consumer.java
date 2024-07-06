@@ -20,6 +20,7 @@ public class Consumer {
         System.out.println(rpc);
         if (userService != null) {
             System.out.println(userService.getUser(user));
+            System.out.println(userService.getNumber());
         } else {
             System.out.println("user == null");
         }
