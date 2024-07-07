@@ -1,0 +1,2 @@
+json=com.xlm.rpc.serializer.JsonSerializer
+kryo=com.xlm.rpc.serializer.KryoSerializer

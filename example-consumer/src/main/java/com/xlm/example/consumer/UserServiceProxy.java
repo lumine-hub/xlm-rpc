@@ -4,10 +4,12 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.xlm.example.common.model.User;
 import com.xlm.example.common.service.UserService;
+import com.xlm.rpc.RpcApplication;
 import com.xlm.rpc.model.RpcRequest;
 import com.xlm.rpc.model.RpcResponse;
 import com.xlm.rpc.serializer.JdkSerializer;
 import com.xlm.rpc.serializer.Serializer;
+import com.xlm.rpc.serializer.SerializerFactory;
 
 import java.io.IOException;
 
@@ -18,7 +20,8 @@ public class UserServiceProxy implements UserService {
 
     public User getUser(User user) {
         // 指定序列化器
-        Serializer serializer = new JdkSerializer();
+//        Serializer serializer = new JdkSerializer();
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         // 发请求
         RpcRequest rpcRequest = RpcRequest.builder()

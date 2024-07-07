@@ -1,0 +1,4 @@
+jdk=com.xlm.rpc.serializer.JdkSerializer
+hessian=com.xlm.rpc.serializer.HessianSerializer
+json=com.xlm.rpc.serializer.JsonSerializer
+kryo=com.xlm.rpc.serializer.KryoSerializer

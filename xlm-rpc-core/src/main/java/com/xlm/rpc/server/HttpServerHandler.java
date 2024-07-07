@@ -1,11 +1,13 @@
 package com.xlm.rpc.server;
 
 
+import com.xlm.rpc.RpcApplication;
 import com.xlm.rpc.model.RpcRequest;
 import com.xlm.rpc.model.RpcResponse;
 import com.xlm.rpc.registry.LocalRegistry;
 import com.xlm.rpc.serializer.JdkSerializer;
 import com.xlm.rpc.serializer.Serializer;
+import com.xlm.rpc.serializer.SerializerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
@@ -19,7 +21,9 @@ public class HttpServerHandler implements Handler<HttpServerRequest>  {
 
     @Override
     public void handle(HttpServerRequest request) {
-        final Serializer serializer = new JdkSerializer();
+//        final Serializer serializer = new JdkSerializer();
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
+
         System.out.println("Received request: " + request.method() + " " + request.uri());
 
         request.bodyHandler(body -> {
