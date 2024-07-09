@@ -16,8 +16,8 @@ public class Consumer {
 //        UserServiceProxy proxy = new  UserServiceProxy(); // 静态代理
 //        User newUser = proxy.getUser(user);
         UserService userService = ServiceProxyFactory.getProxy(UserService.class);
-        RpcConfig rpc = ConfigUtils.loadConfig(RpcConfig.class, "rpc");
-        System.out.println(rpc);
+//        RpcConfig rpc = ConfigUtils.loadConfig(RpcConfig.class, "rpc");
+//        System.out.println(rpc);
         if (userService != null) {
             System.out.println(userService.getUser(user));
             System.out.println(userService.getNumber());

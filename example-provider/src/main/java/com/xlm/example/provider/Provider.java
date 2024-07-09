@@ -16,8 +16,8 @@ public class Provider {
     public static void main(String[] args) throws Exception {
         RpcApplication.init();
 
-        // 注册服务
-        LocalRegistry.register(UserService.class.getName(), UserServiceImpl.class);
+        // 本地注册服务
+//        LocalRegistry.register(UserService.class.getName(), UserServiceImpl.class);
         RpcConfig rpcConfig = RpcApplication.getRpcConfig();
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
         Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
@@ -27,5 +27,6 @@ public class Provider {
         // 启动 web 服务
         HttpServer httpServer = new VertxHttpServer();
         httpServer.doPost(RpcApplication.getRpcConfig().getServerPort());
+        System.out.println("启动成功...");
     }
 }

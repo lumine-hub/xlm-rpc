@@ -28,6 +28,8 @@ public class EtcdRegistry implements Registry{
 
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
 
+    private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+
     @Override
     public void init(RegistryConfig registryConfig) {
         client = Client.builder().endpoints(registryConfig.getAddress()).connectTimeout(Duration.ofMillis(registryConfig.getTimeout())).build();
@@ -39,8 +41,8 @@ public class EtcdRegistry implements Registry{
     public void register(ServiceMetaInfo serviceMetaInfo) throws Exception {
         // 创建Lease客户端
         Lease lease = client.getLeaseClient();
-        // 创建一个租约，租约TTL时间为60秒
-        long leaseId = lease.grant(60).get().getID();
+        // 创建一个租约，租约TTL时间为600秒
+        long leaseId = lease.grant(600).get().getID();
         // 设置要存储的键值对
         String registerKey = ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey();
         ByteSequence key = ByteSequence.from(registerKey, StandardCharsets.UTF_8);
@@ -49,7 +51,7 @@ public class EtcdRegistry implements Registry{
         // 将键值对与租约关联起来，并设置过期时间
         PutOption putOption = PutOption.builder().withLeaseId(leaseId).build();
         kvClient.put(key, value, putOption).get();
-
+        // com.xlm.example.common.service.UserService:1.0/null:null
         localRegisterNodeKeySet.add(serviceMetaInfo.getServiceNodeKey());
     }
 
@@ -60,6 +62,12 @@ public class EtcdRegistry implements Registry{
 
     @Override
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
+
+        List<ServiceMetaInfo> cachedServiceMetaInfoList = registryServiceCache.readCache();
+        if (cachedServiceMetaInfoList != null && cachedServiceMetaInfoList.size() > 0) {
+            // TODO: bug 未用到serviceKey
+            return cachedServiceMetaInfoList;
+        }
         // 前缀搜索，结尾一定要加 '/'
         String searchPrefix = ETCD_ROOT_PATH + serviceKey + "/";
 
@@ -72,12 +80,14 @@ public class EtcdRegistry implements Registry{
                     .get()
                     .getKvs();
             // 解析服务信息
-            return keyValues.stream()
+            List<ServiceMetaInfo> serviceMetaInfoList =  keyValues.stream()
                     .map(keyValue -> {
                         String value = keyValue.getValue().toString(StandardCharsets.UTF_8);
                         return JSONUtil.toBean(value, ServiceMetaInfo.class);
                     })
                     .collect(Collectors.toList());
+            registryServiceCache.writeCache(serviceMetaInfoList);
+            return serviceMetaInfoList;
         } catch (Exception e) {
             throw new RuntimeException("获取服务列表失败", e);
         }
@@ -112,6 +122,7 @@ public class EtcdRegistry implements Registry{
                 // 遍历本节点所有的 key
                 for (String key : localRegisterNodeKeySet) {
                     try {
+                        key = ETCD_ROOT_PATH + key;
                         List<KeyValue> keyValues = kvClient.get(ByteSequence.from(key, StandardCharsets.UTF_8))
                                 .get()
                                 .getKvs();
