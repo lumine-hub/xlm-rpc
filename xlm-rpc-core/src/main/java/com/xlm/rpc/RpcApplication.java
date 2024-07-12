@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RpcApplication {
 
     private static volatile RpcConfig rpcConfig;
+    private static volatile Registry registry;
 
     /**
      * 框架初始化，支持传入自定义配置， 其余默认配置
@@ -21,7 +22,7 @@ public class RpcApplication {
         log.info("rpc init, config = {}", newRpcConfig.toString());
         // 注册中心初始化
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
-        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry = RegistryFactory.getInstance(registryConfig.getRegistry());
         registry.init(registryConfig);
         log.info("registry init, config = {}", registryConfig);
 
@@ -57,5 +58,15 @@ public class RpcApplication {
             }
         }
         return rpcConfig;
+    }
+
+    public static Registry getRegistry(){
+        if (registry != null) {
+            return registry;
+        }
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
+        return registry;
     }
 }
