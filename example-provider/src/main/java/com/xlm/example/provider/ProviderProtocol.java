@@ -2,10 +2,8 @@ package com.xlm.example.provider;
 
 import com.xlm.example.common.service.UserService;
 import com.xlm.rpc.RpcApplication;
-import com.xlm.rpc.config.RpcConfig;
 import com.xlm.rpc.model.ServiceMetaInfo;
 import com.xlm.rpc.registry.LocalRegistry;
-import com.xlm.rpc.registry.RegistryFactory;
 import com.xlm.rpc.server.tcp.VertxTcpServer;
 
 /**
@@ -28,7 +26,7 @@ public class ProviderProtocol {
         RpcApplication.getRegistry().register(serviceMetaInfo);
 
         VertxTcpServer vertxTcpServer = new VertxTcpServer();
-        vertxTcpServer.doStart(8080);
+        vertxTcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
 
     }
 }
