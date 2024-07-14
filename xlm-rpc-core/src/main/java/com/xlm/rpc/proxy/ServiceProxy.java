@@ -5,6 +5,8 @@ import cn.hutool.http.HttpResponse;
 import com.xlm.rpc.RpcApplication;
 import com.xlm.rpc.config.RpcConfig;
 import com.xlm.rpc.constant.RpcConstant;
+import com.xlm.rpc.loadbalancer.LoadBalancer;
+import com.xlm.rpc.loadbalancer.LoadBalancerFactory;
 import com.xlm.rpc.model.RpcRequest;
 import com.xlm.rpc.model.RpcResponse;
 import com.xlm.rpc.model.ServiceMetaInfo;
@@ -17,7 +19,9 @@ import com.xlm.rpc.server.tcp.VertxTcpClient;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务代理（JDK 动态代理）
@@ -46,7 +50,13 @@ public class ServiceProxy implements InvocationHandler {
         if (serviceMetaInfoList.isEmpty()) {
             throw new RuntimeException("暂无服务地址");
         }
-        ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
+        // 添加负载均衡
+        LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
+        // 将调用方法名（请求路径）作为负载均衡参数
+        Map<String,Object> requestParams = new HashMap<>();
+        requestParams.put("methodName", method.getName());
+        ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfoList);
+//        ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
         // 发送 TCP 请求
         RpcResponse rpcResponse = VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo);
         return rpcResponse.getData();

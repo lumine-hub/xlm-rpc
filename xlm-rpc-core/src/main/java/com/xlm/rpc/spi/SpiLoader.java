@@ -21,12 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SpiLoader {
 
     /**
-     * 存储已加载的类：接口名 =>（key => 实现类）
+     * 存储已加载的类：接口名 =>（key => 实现类）如Serializer => (json => com.xlm.rpc.serializer.JsonSerializer)
+     * keyClassMap.put(key, Class.forName(className));
      */
     private static Map<String, Map<String, Class<?>>> loaderMap = new ConcurrentHashMap<>();
 
     /**
-     * 对象实例缓存（避免重复 new），类路径 => 对象实例，单例模式
+     * 对象实例缓存（避免重复 new），类路径 => 对象实例，单例模式 如：com.xlm.rpc.serializer.JsonSerializer => JsonSerializer的实例
      */
     private static Map<String, Object> instanceCache = new ConcurrentHashMap<>();
 

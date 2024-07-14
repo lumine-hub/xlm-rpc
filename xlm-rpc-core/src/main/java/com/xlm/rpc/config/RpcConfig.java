@@ -1,5 +1,6 @@
 package com.xlm.rpc.config;
 
+import com.xlm.rpc.loadbalancer.LoadBalancerKeys;
 import com.xlm.rpc.serializer.SerializerKeys;
 import lombok.Data;
 
@@ -39,5 +40,10 @@ public class RpcConfig {
      * 注册中心的配置
      */
     private RegistryConfig registryConfig = new RegistryConfig();
+
+    /**
+     * 负载均衡的配置
+     */
+    private String loadBalancer = LoadBalancerKeys.RANDOM;
 
 }
