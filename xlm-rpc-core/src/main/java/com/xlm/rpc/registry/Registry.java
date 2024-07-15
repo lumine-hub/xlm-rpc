@@ -16,7 +16,7 @@ public interface Registry {
     void init(RegistryConfig registryConfig);
 
     /**
-     * 注册服务 `provider`
+     * 注册服务 `provider`,只是把信息保存到etcd注册中心而已
      */
     void register(ServiceMetaInfo serviceMetaInfo) throws Exception;
 
