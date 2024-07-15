@@ -1,6 +1,7 @@
 package com.xlm.rpc.config;
 
 import com.xlm.rpc.fault.retry.RetryStrategyKeys;
+import com.xlm.rpc.fault.tolerant.TolerantStrategyKeys;
 import com.xlm.rpc.loadbalancer.LoadBalancerKeys;
 import com.xlm.rpc.serializer.SerializerKeys;
 import lombok.Data;
@@ -51,5 +52,10 @@ public class RpcConfig {
      * 重试策略
      */
     private String retryStrategy = RetryStrategyKeys.NO;
+
+    /**
+     * 容错策略
+     */
+    private String tolerantStrategy = TolerantStrategyKeys.FAIL_FAST;
 
 }
