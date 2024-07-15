@@ -1,0 +1,3 @@
+random=com.xlm.rpc.loadbalancer.RandomLoadBalancer
+roundRobin=com.xlm.rpc.loadbalancer.RoundRobinLoadBalancer
+consistentHash=com.xlm.rpc.loadbalancer.ConsistentHashLoadBalancer

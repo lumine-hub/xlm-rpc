@@ -1,0 +1,2 @@
+no=com.xlm.rpc.fault.retry.NoRetryStrategy
+fixedInterval=com.xlm.rpc.fault.retry.FixedIntervalRetryStrategy

@@ -1,0 +1,4 @@
+failBack=com.xlm.rpc.fault.tolerant.FailBackTolerantStrategy
+failFast=com.xlm.rpc.fault.tolerant.FailFastTolerantStrategy
+failOver=com.xlm.rpc.fault.tolerant.FailOverTolerantStrategy
+failafe=com.xlm.rpc.fault.tolerant.FailSafeTolerantStrategy
