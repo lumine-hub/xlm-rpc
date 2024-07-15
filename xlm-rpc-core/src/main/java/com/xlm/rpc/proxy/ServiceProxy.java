@@ -5,6 +5,8 @@ import cn.hutool.http.HttpResponse;
 import com.xlm.rpc.RpcApplication;
 import com.xlm.rpc.config.RpcConfig;
 import com.xlm.rpc.constant.RpcConstant;
+import com.xlm.rpc.fault.retry.RetryStrategy;
+import com.xlm.rpc.fault.retry.RetryStrategyFactory;
 import com.xlm.rpc.loadbalancer.LoadBalancer;
 import com.xlm.rpc.loadbalancer.LoadBalancerFactory;
 import com.xlm.rpc.model.RpcRequest;
@@ -57,8 +59,12 @@ public class ServiceProxy implements InvocationHandler {
         requestParams.put("methodName", method.getName());
         ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfoList);
 //        ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
+        // 添加重试
+        RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+        RpcResponse rpcResponse = retryStrategy.doRetry(() ->
+                VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
+        );
         // 发送 TCP 请求
-        RpcResponse rpcResponse = VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo);
         return rpcResponse.getData();
 
         // 原来的使用http请求
